@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | PrasaTek</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <script>
+    if (sessionStorage.getItem("adminLogged") !== "true") location.replace("adminlog.html");
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00a8ff;
+      --secondary: #0a3d62;
+      --danger: #e74c3c;
+      --success: #2ecc71;
+      --bg: #f5f6fa;
+      --white: #ffffff;
+      --text: #2f3640;
+      --text-dim: #7f8fa6;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--secondary);
+      color: #fff;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+    }
+
+    .sidebar h2 {
+      font-size: 1.5rem;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .sidebar h2 span {
+      color: var(--primary);
+    }
+
+    .nav-link {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .logout-btn {
+      margin-top: auto;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    /* Main Content */
+    .main {
+      margin-left: 260px;
+      flex: 1;
+      padding: 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .section-card {
+      background: var(--white);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+      display: none;
+    }
+
+    .section-card.active {
+      display: block;
+    }
+
+    h3 {
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .full-width {
+      grid-column: span 2;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #dcdde1;
+      border-radius: 10px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+
+    /* Item Tables/Grids */
+    .data-list {
+      margin-top: 30px;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #f1f2f6;
+    }
+
+    .item-info b {
+      display: block;
+    }
+
+    .item-info span {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    #toast {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      background: var(--success);
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 10px;
+      transform: translateX(200%);
+      transition: 0.4s;
+      z-index: 1000;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    #toast.show {
+      transform: translateX(0);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="sidebar">
+    <div style="text-align:center; margin-bottom: 30px;">
+      <img src="logo.png" alt="Logo" style="height: 60px; max-width: 100%;">
+      <h2 style="font-size: 1.1rem; margin-top: 10px; color: #fff;">Admin Panel</h2>
+    </div>
+    <a href="#" class="nav-link active" onclick="showSection('dashboard', this)"><i class="fa-solid fa-chart-pie"></i>
+      Dashboard</a>
+    <a href="#" class="nav-link" onclick="showSection('settings', this)"><i class="fa-solid fa-gear"></i> Settings</a>
+    <a href="#" class="nav-link" onclick="showSection('services', this)"><i class="fa-solid fa-server"></i> Services</a>
+    <a href="#" class="nav-link" onclick="showSection('products', this)"><i class="fa-solid fa-box"></i> Products</a>
+    <a href="#" class="nav-link" onclick="showSection('reviews', this)"><i class="fa-solid fa-comments"></i> Reviews</a>
+    <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+  </div>
+
+  <div class="main">
+    <div class="header">
+      <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p style="color: var(--text-dim); font-size: 0.85rem;">Welcome back, Administrator</p>
+      </div>
+      <div id="status" style="color: var(--success); font-size: 0.9rem; font-weight: 600;">
+        <i class="fa-solid fa-circle-check"></i> System Secure
+      </div>
+    </div>
+
+    <!-- Dashboard Analytics -->
+    <div id="dashboard" class="section-card active">
+      <h3><i class="fa-solid fa-chart-line"></i> Quick Stats</h3>
+      <div class="form-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div style="background: var(--bg); padding: 20px; border-radius: 15px; text-align: center;">
+          <h2 id="statServices" style="color: var(--primary);">0</h2>
+          <p style="font-size: 0.8rem; color: var(--text-dim);">Services</p>
+        </div>
+        <div style="background: var(--bg); padding: 20px; border-radius: 15px; text-align: center;">
+          <h2 id="statProducts" style="color: var(--primary);">0</h2>
+          <p style="font-size: 0.8rem; color: var(--text-dim);">Products</p>
+        </div>
+        <div style="background: var(--bg); padding: 20px; border-radius: 15px; text-align: center;">
+          <h2 id="statReviews" style="color: var(--danger);">0</h2>
+          <p style="font-size: 0.8rem; color: var(--text-dim);">Pending Reviews</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Section -->
+    <div id="settings" class="section-card">
+      <h3><i class="fa-solid fa-gear"></i> General Settings</h3>
+      <div class="form-grid">
+        <div>
+          <label>Phone</label>
+          <input type="text" id="setPhone" placeholder="+94 77 123 4567">
+        </div>
+        <div>
+          <label>Email</label>
+          <input type="email" id="setEmail" placeholder="info@prasatek.com">
+        </div>
+        <div class="full-width">
+          <label>Address</label>
+          <input type="text" id="setAddress" placeholder="123 Main St, Colombo">
+        </div>
+        <div class="full-width">
+          <label>Google Maps Embed URL / Iframe Code</label>
+          <input type="text" id="setMap" placeholder="Paste the <iframe...> tag or embed URL here">
+          <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 5px;">
+            <i class="fa-solid fa-circle-info" style="color: var(--primary);"></i>
+            Use the <strong>"Embed a map"</strong> option (Share > Embed map).
+            Standard short links (goo.gl) are NOT supported.
+          </p>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveSettings()">Save Configuration</button>
+    </div>
+
+    <!-- Services Section -->
+    <div id="services" class="section-card">
+      <h3><i class="fa-solid fa-server"></i> Manage Services</h3>
+      <div class="form-grid">
+        <div>
+          <label>Name (English)</label>
+          <input type="text" id="srvName">
+        </div>
+        <div>
+          <label>Name (Sinhala)</label>
+          <input type="text" id="srvNameSi">
+        </div>
+        <div>
+          <label>Description (English)</label>
+          <textarea id="srvDesc" rows="2"></textarea>
+        </div>
+        <div>
+          <label>Description (Sinhala)</label>
+          <textarea id="srvDescSi" rows="2"></textarea>
+        </div>
+        <div>
+          <label>FontAwesome Icon (e.g. fa-laptop)</label>
+          <input type="text" id="srvIcon" placeholder="fa-solid fa-microchip">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="addItem('services')">Add Service</button>
+      <div id="srvList" class="data-list"></div>
+    </div>
+
+    <!-- Products Section -->
+    <div id="products" class="section-card">
+      <h3><i class="fa-solid fa-box"></i> Manage Products</h3>
+      <div class="form-grid">
+        <div class="full-width">
+          <label>Product Name</label>
+          <input type="text" id="prdName">
+        </div>
+        <div class="full-width">
+          <label>Price (LKR)</label>
+          <input type="number" id="prdPrice">
+        </div>
+        <div class="full-width">
+          <label>Product Description</label>
+          <textarea id="prdDesc" rows="3" placeholder="Enter detailed specifications here..."></textarea>
+        </div>
+        <div class="full-width">
+          <label>Image URL</label>
+          <input type="text" id="prdImg" placeholder="https://example.com/image.jpg">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="addItem('products')">Add Product</button>
+      <div id="prdList" class="data-list"></div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div id="reviews" class="section-card">
+      <h3><i class="fa-solid fa-comments"></i> Manage Reviews</h3>
+      <h5>Pending Approval</h5>
+      <div id="pendingReviews" class="data-list"></div>
+      <br>
+      <h5>Approved Reviews</h5>
+      <div id="approvedReviews" class="data-list"></div>
+    </div>
+  </div>
+
+  <!-- Edit Modal Overlay -->
+  <div id="adminEditModal"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+    <div
+      style="background:var(--white); padding:30px; border-radius:20px; width:90%; max-width:600px; color:var(--text); box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+      <h3>Edit <span id="editTypeTitle" style="text-transform: capitalize;"></span></h3>
+      <div id="editFormContainer" class="form-grid" style="max-height:60vh; overflow-y:auto; padding-right:10px;"></div>
+      <div style="margin-top:20px; display:flex; gap:10px;">
+        <button class="btn btn-primary" onclick="saveEdit()">Update Item</button>
+        <button class="btn btn-danger"
+          onclick="document.getElementById('adminEditModal').style.display='none'">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast">Saved Successfully!</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import {
+      getFirestore, collection, getDocs, getDoc, addDoc, deleteDoc, doc, updateDoc, query, orderBy
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDijkYp6_KD3B3UXfNs59LgTUeaKOFDZ7s",
+      authDomain: "prasatek-8a823.firebaseapp.com",
+      projectId: "prasatek-8a823"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Advanced Security: Session Timeout & State Check
+    let lastActivity = Date.now();
+    onAuthStateChanged(auth, user => {
+      if (!user || sessionStorage.getItem("adminLogged") !== "true") {
+        location.replace("adminlog.html");
+      }
+    });
+
+    // Inactivity Logout (15 minutes)
+    setInterval(() => {
+      if (Date.now() - lastActivity > 15 * 60 * 1000) logout();
+    }, 60000);
+    window.addEventListener("mousemove", () => lastActivity = Date.now());
+
+    // Core UI functions
+    window.showSection = (id, el) => {
+      document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      el.classList.add('active');
+      document.getElementById('pageTitle').innerText = id.charAt(0).toUpperCase() + id.slice(1);
+    };
+
+    window.logout = () => {
+      signOut(auth).then(() => {
+        sessionStorage.clear();
+        location.replace('adminlog.html');
+      });
+    };
+
+    const notify = (m, type = 'success') => {
+      const t = document.getElementById('toast');
+      t.innerText = m;
+      t.style.background = type === 'success' ? 'var(--success)' : 'var(--danger)';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    };
+
+    // Settings Logic
+    window.saveSettings = async () => {
+      const setMap = document.getElementById("setMap");
+      const mapInput = setMap.value.trim();
+      let finalMapUrl = mapInput;
+
+      // Validation check for common wrong link types
+      if (mapInput.includes('maps.app.goo.gl') || (mapInput.includes('google.com/maps') && !mapInput.includes('embed'))) {
+        notify("Invalid Link! Please use the 'Embed a map' option, not a Share link.", "danger");
+        return;
+      }
+
+      // Extract src from iframe if user pasted the whole tag
+      if (mapInput.includes('<iframe')) {
+        const match = mapInput.match(/src="([^"]+)"/);
+        if (match && match[1]) finalMapUrl = match[1];
+      }
+
+      const data = {
+        phone: document.getElementById("setPhone").value,
+        email: document.getElementById("setEmail").value,
+        address: document.getElementById("setAddress").value,
+        mapUrl: finalMapUrl
+      };
+      const snap = await getDocs(collection(db, "settings"));
+      if (snap.empty) {
+        await addDoc(collection(db, "settings"), data);
+      } else {
+        await updateDoc(doc(db, "settings", snap.docs[0].id), data);
+      }
+      notify("Settings Saved!");
+      document.getElementById("setMap").value = finalMapUrl; // Show the extracted URL
+    };
+
+    async function loadSettings() {
+      const snap = await getDocs(collection(db, "settings"));
+      if (!snap.empty) {
+        const d = snap.docs[0].data();
+        document.getElementById("setPhone").value = d.phone || "";
+        document.getElementById("setEmail").value = d.email || "";
+        document.getElementById("setAddress").value = d.address || "";
+        document.getElementById("setMap").value = d.mapUrl || "";
+      }
+    }
+
+    // CRUD Logic
+    window.addItem = async (type) => {
+      let data = {};
+      if (type === 'services') {
+        const srvName = document.getElementById("srvName");
+        const srvNameSi = document.getElementById("srvNameSi");
+        const srvDesc = document.getElementById("srvDesc");
+        const srvDescSi = document.getElementById("srvDescSi");
+        const srvIcon = document.getElementById("srvIcon");
+        data = { name: srvName.value, name_si: srvNameSi.value, desc: srvDesc.value, desc_si: srvDescSi.value, icon: srvIcon.value };
+        if (!data.name) return;
+        await addDoc(collection(db, "services"), data);
+        srvName.value = srvNameSi.value = srvDesc.value = srvDescSi.value = srvIcon.value = "";
+      } else if (type === 'products') {
+        const prdName = document.getElementById("prdName");
+        const prdPrice = document.getElementById("prdPrice");
+        const prdDesc = document.getElementById("prdDesc");
+        const prdImg = document.getElementById("prdImg");
+        data = {
+          name: prdName.value,
+          price: prdPrice.value,
+          desc: prdDesc ? prdDesc.value : "",
+          img: prdImg ? prdImg.value : ""
+        };
+        if (!data.name) return;
+        await addDoc(collection(db, "products"), data);
+        prdName.value = prdPrice.value = "";
+        if (prdDesc) prdDesc.value = "";
+        if (prdImg) prdImg.value = "";
+      }
+      notify("Item Added!");
+      loadLists();
+    };
+
+    window.delItem = async (col, id) => {
+      if (!confirm("Are you sure?")) return;
+      await deleteDoc(doc(db, col, id));
+      notify("Deleted!", "danger");
+      loadLists();
+    };
+
+    window.approveReview = async (id) => {
+      await updateDoc(doc(db, "reviews", id), { approved: true });
+      notify("Approved!");
+      loadLists();
+    };
+
+    let editMeta = { type: null, id: null };
+
+    window.openEdit = async (type, id) => {
+      editMeta = { type, id };
+      document.getElementById("editTypeTitle").innerText = type;
+      const container = document.getElementById("editFormContainer");
+      container.innerHTML = "Loading...";
+      document.getElementById("adminEditModal").style.display = "flex";
+
+      const dSnap = await getDoc(doc(db, type, id));
+      const data = dSnap.data();
+
+      if (type === "services") {
+        container.innerHTML = `
+          <div class="full-width"><label>Name (English)</label><input type="text" id="eSrvName" value="${data.name || ''}"></div>
+          <div class="full-width"><label>Name (Sinhala)</label><input type="text" id="eSrvNameSi" value="${data.name_si || ''}"></div>
+          <div class="full-width"><label>Description (English)</label><textarea id="eSrvDesc" rows="2">${data.desc || ''}</textarea></div>
+          <div class="full-width"><label>Description (Sinhala)</label><textarea id="eSrvDescSi" rows="2">${data.desc_si || ''}</textarea></div>
+          <div class="full-width"><label>FontAwesome Icon</label><input type="text" id="eSrvIcon" value="${data.icon || ''}"></div>
+        `;
+      } else if (type === "products") {
+        container.innerHTML = `
+          <div class="full-width"><label>Product Name</label><input type="text" id="ePrdName" value="${data.name || ''}"></div>
+          <div class="full-width"><label>Price (LKR)</label><input type="number" id="ePrdPrice" value="${data.price || ''}"></div>
+          <div class="full-width"><label>Product Description</label><textarea id="ePrdDesc" rows="3">${data.desc || ''}</textarea></div>
+          <div class="full-width"><label>Image URL</label><input type="text" id="ePrdImg" value="${data.img || ''}"></div>
+        `;
+      }
+    };
+
+    window.saveEdit = async () => {
+      const { type, id } = editMeta;
+      let updates = {};
+      if (type === "services") {
+        updates = {
+          name: document.getElementById("eSrvName").value,
+          name_si: document.getElementById("eSrvNameSi").value,
+          desc: document.getElementById("eSrvDesc").value,
+          desc_si: document.getElementById("eSrvDescSi").value,
+          icon: document.getElementById("eSrvIcon").value
+        };
+      } else if (type === "products") {
+        updates = {
+          name: document.getElementById("ePrdName").value,
+          price: document.getElementById("ePrdPrice").value,
+          desc: document.getElementById("ePrdDesc").value,
+          img: document.getElementById("ePrdImg").value
+        };
+      }
+
+      await updateDoc(doc(db, type, id), updates);
+      document.getElementById("adminEditModal").style.display = "none";
+      notify("Updated successfully!");
+      loadLists();
+    };
+
+    async function loadLists() {
+      // Services
+      const sSnap = await getDocs(collection(db, "services"));
+      document.getElementById("statServices").innerText = sSnap.size;
+      document.getElementById("srvList").innerHTML = sSnap.docs.map(doc => `
+        <div class="item-row">
+          <div class="item-info">
+            <b>${doc.data().name} / ${doc.data().name_si || '-'}</b>
+            <span>${doc.data().desc ? doc.data().desc.substring(0, 50) : ''}...</span>
+          </div>
+          <div style="display:flex; gap:5px">
+             <button class="btn btn-primary btn-sm" onclick="openEdit('services', '${doc.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+             <button class="btn btn-danger btn-sm" onclick="delItem('services', '${doc.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('');
+
+      // Products
+      const pSnap = await getDocs(collection(db, "products"));
+      document.getElementById("statProducts").innerText = pSnap.size;
+      document.getElementById("prdList").innerHTML = pSnap.docs.map(doc => `
+        <div class="item-row">
+          <div class="item-info">
+            <b>${doc.data().name}</b>
+            <span>Rs. ${doc.data().price}</span>
+          </div>
+          <div style="display:flex; gap:5px">
+             <button class="btn btn-primary btn-sm" onclick="openEdit('products', '${doc.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+             <button class="btn btn-danger btn-sm" onclick="delItem('products', '${doc.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('');
+
+      // Reviews
+      const rSnap = await getDocs(collection(db, "reviews"));
+      let pendingCount = 0;
+      const pendingReviews = document.getElementById("pendingReviews");
+      const approvedReviews = document.getElementById("approvedReviews");
+      pendingReviews.innerHTML = ""; approvedReviews.innerHTML = "";
+      rSnap.forEach(d => {
+        const r = d.data();
+        if (!r.approved) pendingCount++;
+        const html = `
+                <div class="item-row">
+                    <div class="item-info">
+                        <b>${r.name}</b>
+                        <span>${r.message}</span>
+                    </div>
+                    <div style="display:flex; gap:5px">
+                        ${!r.approved ? `<button class="btn btn-success btn-sm" onclick="approveReview('${d.id}')">Approve</button>` : ''}
+                        <button class="btn btn-danger btn-sm" onclick="delItem('reviews', '${d.id}')">Delete</button>
+                    </div>
+                </div>`;
+        r.approved ? approvedReviews.innerHTML += html : pendingReviews.innerHTML += html;
+      });
+      document.getElementById("statReviews").innerText = pendingCount;
+    }
+
+    // Init
+    loadSettings();
+    loadLists();
+  </script>
+</body>
+
+</html>

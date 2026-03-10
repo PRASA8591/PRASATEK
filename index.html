@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrasaTek | System Solutions</title>
+  <meta name="description" content="Professional PC Repairs, Custom Build Solutions & IT Support by PrasaTek.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <a href="#" class="logo"><img src="logo.png" alt="PrasaTek"></a>
+      <i class="fa-solid fa-bars menu-toggle" onclick="toggleMenu()"></i>
+      <nav id="navMenu">
+        <a href="#services" data-i18n="navServices">Services</a>
+        <a href="#products" data-i18n="navProducts">Products</a>
+        <a href="#reviews" data-i18n="navReviews">Reviews</a>
+        <a href="#contact" data-i18n="navContact">Contact</a>
+        <button class="lang-btn" onclick="toggleLang()" id="langBtn">සිංහල</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1 id="heroTitle" data-i18n="heroTitle">Your Trusted Technology Partner</h1>
+      <p id="heroDesc" data-i18n="heroDesc">Professional Repairs & Custom PC Solutions tailored to your needs.</p>
+      <a href="#services" class="cta-btn" data-i18n="heroBtn">Explore Our Services</a>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="section-padding">
+    <div class="container">
+      <div class="section-title">
+        <h2 data-i18n="srvTitle">Our Services</h2>
+        <p data-i18n="srvSubtitle">High-quality tech solutions for every individual and business.</p>
+      </div>
+      <div id="servicesList" class="grid">
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="section-padding" style="background: rgba(0,168,255,0.05);">
+    <div class="container grids"
+      style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); text-align: center; gap: 40px;">
+      <div>
+        <h2 style="font-size: 3rem; color: var(--primary);">100+</h2>
+        <p data-i18n="statsHappy">Happy Clients</p>
+      </div>
+      <div>
+        <h2 style="font-size: 3rem; color: var(--primary);">500+</h2>
+        <p data-i18n="statsRepairs">Repairs Done</p>
+      </div>
+      <div>
+        <h2 style="font-size: 3rem; color: var(--primary);">5+</h2>
+        <p data-i18n="statsExperience">Years Experience</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section id="products" class="section-padding" style="background: rgba(255,255,255,0.02)">
+    <div class="container">
+      <div class="section-title">
+        <h2 data-i18n="prdTitle">Featured Products</h2>
+        <p data-i18n="prdSubtitle">Get the best components and hardware at competitive prices.</p>
+        <div style="max-width: 400px; margin: 30px auto 0;">
+          <div style="position: relative;">
+            <i class="fa-solid fa-magnifying-glass"
+              style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: 0.5;"></i>
+            <input type="text" data-i18n="searchPlaceholder" placeholder="Search products..."
+              onkeyup="searchProducts(this.value)"
+              style="width: 100%; padding: 12px 12px 12px 45px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 30px; color: #fff; outline: none;">
+          </div>
+        </div>
+      </div>
+      <div class="carousel-container">
+        <button class="carousel-btn left" onclick="scrollCarousel(-1)" aria-label="Scroll left"><i
+            class="fa-solid fa-chevron-left"></i></button>
+        <div id="productsList" class="grid">
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+        </div>
+        <button class="carousel-btn right" onclick="scrollCarousel(1)" aria-label="Scroll right"><i
+            class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact & Review Section -->
+  <section id="contact" class="section-padding">
+    <div class="container">
+      <div class="contact-container">
+        <div class="contact-info">
+          <h3 data-i18n="contactTitle">Get in Touch</h3>
+          <div class="info-item">
+            <i class="fa-solid fa-phone"></i>
+            <div>
+              <p data-i18n="labelPhone">Phone Number</p>
+              <span id="cPhone">Loading...</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fa-solid fa-envelope"></i>
+            <div>
+              <p data-i18n="labelEmail">Email Address</p>
+              <span id="cEmail">Loading...</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <div>
+              <p data-i18n="labelAddress">Our Location</p>
+              <span id="cAddress">Loading...</span>
+            </div>
+          </div>
+
+          <div class="glass-card" style="height: 250px; overflow: hidden; margin-top: 30px;">
+            <iframe id="mapFrame" src="https://www.google.com/maps/embed?pb=PLACEHOLDER" width="100%" height="100%"
+              style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <div class="glass-card contact-form">
+          <h3 style="margin-bottom: 25px;" data-i18n="inquiryTitle">Quick Inquiry</h3>
+          <div class="form-group">
+            <label for="qName" data-i18n="placeholderName">Your Name</label>
+            <input type="text" id="qName" placeholder="Enter your name">
+          </div>
+          <div class="form-group">
+            <label for="qMsg" data-i18n="placeholderInquiry">How can we help?</label>
+            <textarea id="qMsg" rows="4" placeholder="Tell us what you need..."></textarea>
+          </div>
+          <button class="submit-btn" onclick="sendWhatsApp()">
+            <i class="fa-brands fa-whatsapp" style="margin-right: 10px;"></i> <span data-i18n="btnWA">Chat on
+              WhatsApp</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews Section -->
+  <section id="reviews" class="section-padding" style="background: rgba(255,255,255,0.02)">
+    <div class="container">
+      <div class="section-title">
+        <h2 data-i18n="revTitle">What Clients Say</h2>
+        <p data-i18n="revSubtitle">Real feedback from our valued customers.</p>
+      </div>
+      <div id="reviewsList" class="grid">
+        <!-- Reviews will load here -->
+      </div>
+
+      <div class="glass-card" style="max-width: 600px; margin: 60px auto 0; padding: 40px;">
+        <h3 style="text-align: center; margin-bottom: 30px;" data-i18n="addRev">Write a Review</h3>
+        <div class="form-group">
+          <input type="text" id="rName" placeholder="Your Name">
+        </div>
+        <div class="form-group">
+          <textarea id="rMsg" rows="3" placeholder="Share your experience..."></textarea>
+        </div>
+        <button class="submit-btn" onclick="submitReview()" data-i18n="btnReview">Submit Review</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- WhatsApp FAB -->
+  <a class="whatsapp-fab" onclick="sendWhatsApp()">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <a href="#" class="logo" style="display:inline-block; margin-bottom:10px;"><img src="logo.png" alt="PrasaTek"
+          style="height:50px"></a>
+      <p id="footerAddress"
+        style="max-width: 400px; margin: 0 auto 20px; color: var(--text-dim); font-size: 0.85rem; opacity: 0.8;">Loading
+        address...</p>
+      <div class="footer-nav">
+        <a href="#services" data-i18n="navServices">Services</a>
+        <a href="#products" data-i18n="navProducts">Products</a>
+        <a href="#reviews" data-i18n="navReviews">Reviews</a>
+        <a href="#contact" data-i18n="navContact">Contact</a>
+      </div>
+      <p class="copyright">© 2026 <strong>PrasaTek System Solutions</strong>. <span data-i18n="rights">All Rights
+          Reserved.</span></p>
+    </div>
+  </footer>
+
+  <!-- Product Modal -->
+  <div id="productModal" class="modal-overlay" onclick="closeProductModal(event)">
+    <div class="modal-content glass-card" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeProductModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-body" style="display: block; width: 100%;">
+        <div class="modal-info" style="padding: 30px;">
+          <h2 id="modalTitle" style="font-size: 2rem; margin-bottom: 5px;">Product Name</h2>
+          <p id="modalPrice" class="price-tag" style="margin-bottom: 20px;">Rs. 0</p>
+          <div class="modal-img-container"
+            style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 10px; margin-bottom: 25px; text-align: center;">
+            <img id="modalImg" src="" alt="Product"
+              style="display:none; max-width: 100%; max-height: 350px; margin: 0 auto; border-radius: 10px;" />
+            <i id="modalIcon" class="fa-solid fa-laptop" style="font-size: 5rem; opacity: 0.5; margin: 50px 0;"></i>
+          </div>
+          <div class="modal-desc" id="modalDesc"
+            style="color: var(--text-dim); line-height: 1.8; white-space: pre-wrap; font-size: 1rem;">No description
+            available.</div>
+          <button class="cta-btn" onclick="sendWhatsAppFromModal()" style="width:100%; margin-top:30px;">
+            <i class="fa-brands fa-whatsapp"></i> <span data-i18n="btnWA">Inquire Now</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast">Notification</div>
+
+  <!-- Scripts -->
+  <script type="module" src="site.js"></script>
+  <script>
+    window.toggleMenu = () => {
+      const nav = document.getElementById("navMenu");
+      nav.classList.toggle("active");
+    };
+  </script>
+
+</body>
+
+</html>
